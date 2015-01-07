@@ -3,7 +3,7 @@
 <project name="RestFB" default="dist" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
         <property name="libraryVersion" value="1.7.0" />
 
-        <path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" /> 
+        <path id="maven-ant-tasks.classpath" path="lib/maven-ant-tasks-2.1.3.jar" />
         <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
              uri="antlib:org.apache.maven.artifact.ant" classpathref="maven-ant-tasks.classpath" />
 
@@ -21,9 +21,9 @@
         <property name="websiteDir" value="website" />
 
         <!-- Java switches -->
-        <property name="javaVersion" value="1.5" />
+        <property name="javaVersion" value="1.8" />
         <property name="javaDebug" value="true" />
-        <property name="javaDebugLevel" value="lines,source" />
+        <property name="javaDebugLevel" value="lines,source,vars" />
 
         <!-- Maven settings - see https://docs.sonatype.org/display/Repository/Sonatype+OSS+Maven+Repository+Usage+Guide -->
         <property name="mavenGroupId" value="com.restfb" />
@@ -39,7 +39,7 @@
         <artifact:dependencies pathId="dependency.classpath">
                 <dependency groupId="org.projectlombok" artifactId="lombok" version="1.14.4" scope="provided"/>
         </artifact:dependencies>
-	
+
         <target name="compile" description="Compiles library code">
                 <mkdir dir="${classesDir}" />
                 <echo message="Compiling..." />
@@ -73,7 +73,7 @@
         <target name="doc" description="Builds Javadoc">
                 <echo message="Building Javadoc..." />
                 <taskdef classname="lombok.delombok.ant.DelombokTask" classpathref="dependency.classpath" name="delombok" />
-                <mkdir dir="${javadocDir}" />		
+                <mkdir dir="${javadocDir}" />
                 <mkdir dir="${delombokDir}" />
 
                 <delombok verbose="true" encoding="UTF-8" to="${delombokDir}">
@@ -82,10 +82,10 @@
                         </fileset>
                         <format value="suppressWarnings:skip" />
                 </delombok>
-		
+
                 <!-- TODO: make a stylesheet that looks good with Java 7's new javadoc -->
                 <!-- stylesheetfile="${miscDir}/javadoc/javadoc.css" -->
-		
+
                 <javadoc destdir="${javadocDir}" author="true" version="true" use="true" windowtitle="RestFB" access="public"
                  overview="${miscDir}/javadoc/overview.html" linksource="yes">
                         <packageset dir="${delombokDir}" defaultexcludes="yes" />
@@ -109,22 +109,22 @@
                         <fileset dir="${buildDir}" includes="**/*" />
                 </delete>
         </target>
-	
+
         <target name="mavenBuild" depends="clean, compile, doc" description="Builds the RestFB distribution for Maven central deployment">
                 <echo message="Building Maven distribution..." />
                 <mkdir dir="${mavenDir}" />
 
-                <jar destfile="${mavenJar}">			
+                <jar destfile="${mavenJar}">
                         <fileset dir="${classesDir}" />
                 </jar>
-		
+
                 <jar destfile="${mavenSourcesJar}">
-                        <fileset dir="${librarySourceDir}" />			
-                </jar>		
+                        <fileset dir="${librarySourceDir}" />
+                </jar>
 
                 <jar destfile="${mavenJavadocJar}">
-                        <fileset dir="${javadocDir}" />			
-                </jar>		
+                        <fileset dir="${javadocDir}" />
+                </jar>
         </target>
 
         <target name="mavenDeploySnapshot" depends="mavenBuild" description="Deploy a snapshot version to Maven snapshot repository">
